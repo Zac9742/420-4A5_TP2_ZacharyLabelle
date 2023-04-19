@@ -4,8 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 
 const HttpErreur = require("../models/http-erreur");
 
-const Place = require("../models/place");
-const Utilisateur = require("../models/utilisateur");
+const Place = require("../models/cours");
+const Utilisateur = require("../models/prof");
 
 const getPlaceById = async (requete, reponse, next) => {
   const placeId = requete.params.placeId;

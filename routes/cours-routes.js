@@ -1,6 +1,6 @@
 const express = require("express");
 
-const controleursPlace = require("../controllers/places-controleurs")
+const controleursPlace = require("../controllers/cours-controleurs")
 const router = express.Router();
 
 

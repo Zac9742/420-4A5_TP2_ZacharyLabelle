@@ -1,6 +1,6 @@
 const express = require("express");
 
-const controleursUtilisateurs = require("../controllers/utilisateurs-controlleurs")
+const controleursUtilisateurs = require("../controllers/profs-controlleurs")
 const router = express.Router();
 
 router.get('/', controleursUtilisateurs.getUtilisateurs);
