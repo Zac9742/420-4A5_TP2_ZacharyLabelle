@@ -1,12 +1,14 @@
 const express = require("express");
 
-const controleursUtilisateurs = require("../controllers/profs-controlleurs")
+const controleursProf = require("../controllers/profs-controlleurs")
 const router = express.Router();
 
-router.get('/', controleursUtilisateurs.getUtilisateurs);
+router.get("/:profId", controleursProf.getProfById);
 
-router.post('/inscription', controleursUtilisateurs.inscription);
+router.post('/', controleursProf.creerProf);
 
-router.post('/connexion', controleursUtilisateurs.connexion);
+router.patch('/:profId', controleursProf.updateProf);
+
+router.delete('/:profId', controleursProf.supprimerProf);
 
 module.exports = router;

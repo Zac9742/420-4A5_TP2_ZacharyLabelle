@@ -1,87 +1,107 @@
 const { v4: uuidv4 } = require("uuid");
 const HttpErreur = require("../models/http-erreur");
 
-const Utilisateur = require("../models/prof");
+const Prof = require("../models/prof");
+const UnCours = require("../models/unCours");
 
-const UTILISATEURS = [
+const PROFESSEURS = [
   {
-    id: "u1",
-    nom: "Sylvain Labranche",
-    courriel: "slabranche@cmontmorency.qc.ca",
-    motDePasse: "test",
+    dateEmbauche: "2023-04-18",
+    nom: "Labranche",
+    prenom: "Sylvain",
+    image: "",
+    listeCours: []
   },
 ];
 
-const getUtilisateurs = async (requete, reponse, next) => {
-  let utilisateurs;
-
+const getProfById = async (requete, reponse, next) => {
+  const profId = requete.params.profId;
+  let prof;
   try {
-    utilisateurs = await Utilisateur.find({}, "-motDePasse");
-  } catch {
-    return next(new HttpErreur("Erreur accès utilisateurs"), 500);
-  }
-
-  reponse.json({
-    utilisateurs: utilisateurs.map(utilisateur =>
-      utilisateur.toObject({ getters: true })
-    ) });
-};
-
-const inscription = async (requete, reponse, next) => {
-  const { nom, courriel, motDePasse } = requete.body;
-
-  let utilisateurExiste;
-
-  try {
-    utilisateurExiste = await Utilisateur.findOne({ courriel: courriel });
-  } catch {
-    return next(new HttpErreur("Échec vérification utilisateur existe", 500));
-  }
-
-  if (utilisateurExiste) {
-    return next(
-      new HttpErreur("Utilisateur existe déjà, veuillez vos connecter", 422)
-    );
-  }
-
-  let nouvelUtilisateur = new Utilisateur({
-    nom,
-    courriel,
-    image: "image.png",
-    motDePasse,
-    places: [],
-  });
-  try {
-    await nouvelUtilisateur.save();
+    prof = await Prof.findById(profId);
   } catch (err) {
-    console.log(err);
-    return next(new HttpErreur("Erreur lors de l'ajout de l'utilisateur", 422));
+    return next(
+      new HttpErreur("Erreur lors de la récupération du professeur", 500)
+    );
   }
-  reponse
-    .status(201)
-    .json({ utilisateur: nouvelUtilisateur.toObject({ getter: true }) });
+  if (!prof) {
+    return next(new HttpErreur("Aucun professeur trouvé pour l'id fourni", 404));
+  }
+  reponse.json({ prof: prof.toObject({ getters: true }) });
 };
 
-const connexion = async (requete, reponse, next) => {
-  const { courriel, motDePasse } = requete.body;
-
-  let utilisateurExiste;
+const creerProf = async (requete, reponse, next) => {
+  const { dateEmbauche, nom, prenom, image, listeCours } = requete.body;
+  const nouveauProf = new Prof({
+    dateEmbauche,
+    nom,
+    prenom,
+    image,
+    listeCours,
+  });
 
   try {
-    utilisateurExiste = await Utilisateur.findOne({ courriel: courriel });
+
+    await nouveauProf.save();
+  
+  } catch (err) {
+    const erreur = new HttpErreur("Création du professeur échouée", 500);
+    return next(erreur);
+  }
+  reponse.status(201).json({ prof: nouveauProf });
+};
+
+const updateProf = async (requete, reponse, next) => {
+  const { dateEmbauche, nom, prenom } = requete.body;
+  const profId = requete.params.profId;
+
+  let prof;
+
+  try {
+    prof = await Prof.findById(profId);
+    prof.dateEmbauche = dateEmbauche;
+    prof.nom = nom;
+    prof.prenom = prenom;
+
+    await prof.save();
   } catch {
     return next(
-      new HttpErreur("Connexion échouée, veuillez réessayer plus tard", 500)
+      new HttpErreur("Erreur lors de la mise à jour du professeur", 500)
     );
   }
 
-  if (!utilisateurExiste || utilisateurExiste.motDePasse !== motDePasse) {
-    return next(new HttpErreur("Courriel ou mot de passe incorrect", 401));
-  }
-
-  reponse.json({ message: "connexion réussie!" });
+  reponse.status(200).json({ prof: prof.toObject({ getters: true }) });
 };
 
-exports.getUtilisateurs = getUtilisateurs;
-exports.inscription = inscription;
-exports.connexion = connexion;
+const supprimerProf = async (requete, reponse, next) => {
+  const profId = requete.params.profId;
+  let prof;
+
+  try {
+    prof = await Prof.findById(profId);
+  } catch {
+    return next(
+      new HttpErreur("Erreur lors de la suppression du professeur", 500)
+    );
+  }
+  if(!prof){
+    return next(new HttpErreur("Impossible de trouver le professeur", 404));
+  }
+
+  try{
+
+    await prof.remove();
+    await UnCours.updateMany({ prof: profId }, { $unset: { prof: 1 } });
+
+  }catch{
+    return next(
+      new HttpErreur("Erreur lors de la suppression du professeur", 500)
+    );
+  }
+  reponse.status(200).json({ message: "Professeur supprimé" });
+};
+
+exports.getProfById = getProfById;
+exports.creerProf = creerProf;
+exports.updateProf = updateProf;
+exports.supprimerProf = supprimerProf;

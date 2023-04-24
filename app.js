@@ -5,7 +5,7 @@ mongoose.set('strictQuery', true);
 
 const coursRoutes = require("./routes/cours-routes");
 const profsRoutes = require("./routes/profs-routes");
-const etudiantsRoutes = require("./routes/etudiants-routes")
+const etudiantsRoutes = require("./routes/etudiants-routes");
 const HttpErreur = require("./models/http-erreur");
 
 const app = express();

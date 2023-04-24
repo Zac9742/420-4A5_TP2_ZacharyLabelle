@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const coursSchema = new Schema({
+const unCoursSchema = new Schema({
     titre:{type: String, required: true},
     discipline: {type: String, required: true},
     nbMaxEtudiants: {type: String, required: true},
@@ -12,4 +12,4 @@ const coursSchema = new Schema({
     prof:{type: mongoose.Types.ObjectId, required: true, ref:"Prof"}
 });
 
-module.exports = mongoose.model("Cours", coursSchema);
+module.exports = mongoose.model("UnCours", unCoursSchema);

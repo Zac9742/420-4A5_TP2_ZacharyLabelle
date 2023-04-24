@@ -1,17 +1,15 @@
 const express = require("express");
 
-const controleursPlace = require("../controllers/cours-controleurs")
+const controleursCours = require("../controllers/cours-controleurs")
 const router = express.Router();
 
 
-router.get("/:placeId", controleursPlace.getPlaceById);
+router.get("/:unCoursId", controleursCours.getUnCoursById);
 
-router.get("/utilisateur/:utilisateurId", controleursPlace.getPlacesByUserId);
+router.post('/', controleursCours.creerUnCours);
 
-router.post('/', controleursPlace.creerPlace);
+router.patch('/:unCoursId', controleursCours.updateUnCours);
 
-router.patch('/:placeId', controleursPlace.updatePlace);
-
-router.delete('/:placeId', controleursPlace.supprimerPlace);
+router.delete('/:unCoursId', controleursCours.supprimerUnCours);
 
 module.exports = router;
