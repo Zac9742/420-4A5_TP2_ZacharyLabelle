@@ -9,7 +9,7 @@ const PROFESSEURS = [
     dateEmbauche: "2023-04-18",
     nom: "Labranche",
     prenom: "Sylvain",
-    image: "",
+    image: "Test",
     listeCours: []
   },
 ];
