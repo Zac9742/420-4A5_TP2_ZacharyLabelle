@@ -49,7 +49,7 @@ const creerEtudiant = async (requete, reponse, next) => {
 };
 
 const updateEtudiant = async (requete, reponse, next) => {
-  const {nom, prenom, numAdmission, listeCours} = requete.body;
+  const {nom, prenom, numAdmission} = requete.body;
   const etudiantId = requete.params.etudiantId;
 
   let etudiant;
@@ -59,7 +59,6 @@ const updateEtudiant = async (requete, reponse, next) => {
     etudiant.nom = nom;
     etudiant.prenom = prenom;
     etudiant.numAdmission = numAdmission;
-    etudiant.listeCours = listeCours;
 
     await etudiant.save();
   } catch {

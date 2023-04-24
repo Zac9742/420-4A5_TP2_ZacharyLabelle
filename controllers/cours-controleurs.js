@@ -80,7 +80,7 @@ const creerUnCours = async (requete, reponse, next) => {
 };
 
 const updateUnCours = async (requete, reponse, next) => {
-  const { titre, discipline, etudiants, prof } = requete.body;
+  const { titre, discipline, nbMaxEtudiants } = requete.body;
   const unCoursId = requete.params.unCoursId;
 
   let unCours;
@@ -89,7 +89,7 @@ const updateUnCours = async (requete, reponse, next) => {
     unCours = await UnCours.findById(unCoursId);
     unCours.titre = titre;
     unCours.discipline = discipline;
-    unCours.etudiants = etudiants;
+    unCours.nbMaxEtudiants = nbMaxEtudiants;
     await unCours.save();
   } catch {
     return next(

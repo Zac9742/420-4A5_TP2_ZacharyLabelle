@@ -10,9 +10,4 @@ const etudiantSchema = new Schema({
     listeCours: [{type: mongoose.Types.ObjectId, required: true, ref:"UnCours"}]
 });
 
-etudiantSchema.pre("save", function (next) {
-    this._id = this.numAdmission;
-    next();
-});
-
 module.exports = mongoose.model("Etudiant", etudiantSchema);
